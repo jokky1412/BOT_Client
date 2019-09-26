@@ -15,13 +15,13 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_494CB2F9315343009174B59BCA2BC2D6"
+        "MsmKey" = "8:_10C96A6BAB574394B1B29FFEAC808763"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_8895C95C2EDC4AEDA58BCD209F30AF0A"
+        "MsmKey" = "8:_494CB2F9315343009174B59BCA2BC2D6"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -29,6 +29,12 @@
         {
         "MsmKey" = "8:_C2353A7F8CAD480B8066B084A9F530ED"
         "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_E3ACA1EBEEEBF7E5BEEC5816910A0CB0"
+        "OwnerKey" = "8:_494CB2F9315343009174B59BCA2BC2D6"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -46,7 +52,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_494CB2F9315343009174B59BCA2BC2D6"
+        "OwnerKey" = "8:_E3ACA1EBEEEBF7E5BEEC5816910A0CB0"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -154,7 +160,7 @@
         }
         "File"
         {
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8895C95C2EDC4AEDA58BCD209F30AF0A"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_10C96A6BAB574394B1B29FFEAC808763"
             {
             "SourcePath" = "8:..\\BOT_Client\\MD5校验器.exe"
             "TargetName" = "8:MD5校验器.exe"
@@ -192,6 +198,37 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_E3ACA1EBEEEBF7E5BEEC5816910A0CB0"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:NAudio, Version=1.5.4.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_E3ACA1EBEEEBF7E5BEEC5816910A0CB0"
+                    {
+                    "Name" = "8:NAudio.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:NAudio.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_63FF5F6B4EEA40F5A5D78B8FA532EDC7"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E5E1458DB9344604A53A2EB3B8C2A83E"
@@ -271,7 +308,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:客户端挂机程序"
         "ProductCode" = "8:{86D483CB-1090-4424-83FA-2786D6565D09}"
-        "PackageCode" = "8:{483606EC-D6B9-413F-9478-D50689D958E8}"
+        "PackageCode" = "8:{53B15B0B-1530-433D-A55B-5A9FED700225}"
         "UpgradeCode" = "8:{1C1A03DE-30D1-4BC8-B5E8-68F90CE09DA8}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
