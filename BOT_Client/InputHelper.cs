@@ -5,6 +5,8 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Collections;
+using System.Windows.Threading;
+using System.Threading;
 
 /// <summary>
 /// 模拟鼠标/键盘 
@@ -81,16 +83,42 @@ namespace KeyboardMouseAPI
         }
 
         /// <summary>
-        /// 同时按下3个按键
+        /// 按顺序，单击3个坐标
         /// </summary>
-        /// <param name="a"></param>键码值数组 a
-        /// <param name="b"></param>键码值数组 b
-        /// <param name="c"></param>键码值数组 c
-        public void ClickThreeKeys(int[] a, int[] b, int[] c) {
+        /// <param name="a"></param>坐标 a
+        /// <param name="b"></param>坐标 b
+        /// <param name="c"></param>坐标 c
+        public void ClickThreeKeys(int[] a, int milliSec1, int[] b, int milliSec2, int[] c) {
             ClickOnceAt(a);
+            Delay(milliSec1);
             ClickOnceAt(b);
+            Delay(milliSec2);
             ClickOnceAt(c);
         }
+
+        #region 延时函数：毫秒
+        /// <summary>
+        /// 延时子函数
+        /// </summary>
+        static void DoEvents() {
+            DispatcherFrame frame = new DispatcherFrame(true);
+            Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background, (SendOrPostCallback)delegate (object arg) {
+                DispatcherFrame fr = arg as DispatcherFrame;
+                fr.Continue = false;
+            }, frame);
+            Dispatcher.PushFrame(frame);
+        }
+        /// <summary>
+        /// 延时函数
+        /// </summary>
+        /// <param name="milliSecond">1000 = 1秒</param>
+        public static void Delay(int milliSecond) {
+            int start = Environment.TickCount;
+            while (Math.Abs(Environment.TickCount - start) < milliSecond) {
+                DoEvents();
+            }
+        }
+        #endregion
 
 
         /// <summary>
@@ -568,6 +596,36 @@ namespace KeyboardMouseAPI
 
         #endregion
 
+
+
+        #region 输入法相关
+
+        [DllImport("user32.dll")]
+        static extern IntPtr GetForegroundWindow();
+        [DllImport("user32.dll")]
+        static extern uint GetWindowThreadProcessId(IntPtr hwnd, IntPtr proccess);
+        [DllImport("user32.dll")]
+        static extern IntPtr GetKeyboardLayout(uint thread);
+        /// <summary>
+        /// 获取 WPF 输入法的语言区域
+        /// </summary>
+        public static int GetCurrentKeyboardLayout() {
+            IntPtr foregroundWindow = GetForegroundWindow();
+            uint foregroundProcess = GetWindowThreadProcessId(foregroundWindow, IntPtr.Zero);
+            int keyboardLayout = GetKeyboardLayout(foregroundProcess).ToInt32() & 0xFFFF;
+            return keyboardLayout; 
+        }
+        /// <summary>
+        /// 切换为英文输入法
+        /// </summary>
+        public void SwtichKeyboardLayoutToEnglish() {
+            byte[] switchKeyboardLayou = { vbKeyAlt, vbKeyShift };
+            if (GetCurrentKeyboardLayout() != 1033) {
+                InputKeys(switchKeyboardLayou);
+            }
+        }
+
+        #endregion
 
     }
 
