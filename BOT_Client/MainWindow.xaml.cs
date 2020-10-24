@@ -618,28 +618,28 @@ namespace BOT_Client {
                         case 1024:
                             this.InputHelper.ClickThreeKeys(
                                 // 下方的信号源系统按钮
-                                CoordinateSettings.ALM_XHY_1024, 500,
+                                CoordinateSettings.ALM_XHY_1024, 1000,
                                 // 禁止声音
-                                CoordinateSettings.ALM_XHY_MUTE_1024, 500,
+                                CoordinateSettings.ALM_XHY_MUTE_1024, 1000,
                                 // 确定
                                 CoordinateSettings.ALM_XHY_YES_1024);
                             break;
                         case 1152:
                             this.InputHelper.ClickThreeKeys(
-                                CoordinateSettings.ALM_XHY_1152, 500,
-                                CoordinateSettings.ALM_XHY_MUTE_1152, 500,
+                                CoordinateSettings.ALM_XHY_1152, 1000,
+                                CoordinateSettings.ALM_XHY_MUTE_1152, 1000,
                                 CoordinateSettings.ALM_XHY_YES_1152);
                             break;
                         case 1280:
                             this.InputHelper.ClickThreeKeys(
-                                CoordinateSettings.ALM_XHY_1280_43, 500,
-                                CoordinateSettings.ALM_XHY_MUTE_1280_43, 500,
+                                CoordinateSettings.ALM_XHY_1280_43, 1000,
+                                CoordinateSettings.ALM_XHY_MUTE_1280_43, 1000,
                                 CoordinateSettings.ALM_XHY_YES_1280_43);
                             break;
                         default:
                             this.InputHelper.ClickThreeKeys(
-                                CoordinateSettings.ALM_XHY_1024, 500,
-                                CoordinateSettings.ALM_XHY_MUTE_1024, 500,
+                                CoordinateSettings.ALM_XHY_1024, 1000,
+                                CoordinateSettings.ALM_XHY_MUTE_1024, 1000,
                                 CoordinateSettings.ALM_XHY_YES_1024);
                             break;
                     }   // switch end
@@ -654,28 +654,28 @@ namespace BOT_Client {
                         case 1280:  
                             this.InputHelper.ClickThreeKeys(
                                 // 下方的信号源系统按钮
-                                CoordinateSettings.ALM_XHY_1280_169, 500,
+                                CoordinateSettings.ALM_XHY_1280_169, 1000,
                                 // 禁止声音
-                                CoordinateSettings.ALM_XHY_MUTE_1280_169, 500,
+                                CoordinateSettings.ALM_XHY_MUTE_1280_169, 1000,
                                 // 确定
                                 CoordinateSettings.ALM_XHY_YES_1280_169);
                             break;
                         case 1600:
                             this.InputHelper.ClickThreeKeys(
-                                CoordinateSettings.ALM_XHY_1600, 500,
-                                CoordinateSettings.ALM_XHY_MUTE_1600, 500,
+                                CoordinateSettings.ALM_XHY_1600, 1000,
+                                CoordinateSettings.ALM_XHY_MUTE_1600, 1000,
                                 CoordinateSettings.ALM_XHY_YES_1600);
                             break;
                         case 1920:
                             this.InputHelper.ClickThreeKeys(
-                                CoordinateSettings.ALM_XHY_1920, 500,
-                                CoordinateSettings.ALM_XHY_MUTE_1920, 500,
+                                CoordinateSettings.ALM_XHY_1920, 1000,
+                                CoordinateSettings.ALM_XHY_MUTE_1920, 1000,
                                 CoordinateSettings.ALM_XHY_YES_1920);
                             break;
                         default:
                             this.InputHelper.ClickThreeKeys(
-                                CoordinateSettings.ALM_XHY_1600, 500,
-                                CoordinateSettings.ALM_XHY_MUTE_1600, 500,
+                                CoordinateSettings.ALM_XHY_1600, 1000,
+                                CoordinateSettings.ALM_XHY_MUTE_1600, 1000,
                                 CoordinateSettings.ALM_XHY_YES_1600);
                             break;
                     }   // switch end
