@@ -8,7 +8,6 @@ using System.Threading;
 using System.Configuration;
 using KeyboardMouseAPI;
 
-
 namespace BOT_Client {
 	/// <summary>
 	/// MainWindow.xaml 的交互逻辑
@@ -183,6 +182,8 @@ namespace BOT_Client {
         /// 模拟鼠标和键盘的单个动作；将字符串转换为对应的键盘键码
         /// </summary>
         InputHelper InputHelper = new InputHelper();
+        //
+        ScreenHelper ScreenHelper = new ScreenHelper();
         /// <summary>
         /// 集合：客户端窗口内部各个控件的坐标
         /// </summary>
@@ -216,16 +217,16 @@ namespace BOT_Client {
             // 获取分辨率比例
             this.scrRatio = this.GetScreenRatio();
 
-            // MessageBox.Show(DESKTOP.Width.ToString() + " " + DESKTOP.Height.ToString());
-
-            // 开始挂机 按键 绿色
+            // 开始挂机 按键 设置为绿色
             this.BtnStart.Foreground = Brushes.Green;
-
+            // 用户名/密码 文本框
             this.TxtUserName.IsReadOnly = false;
+            // 切换为英文输入法
+            InputHelper.SwtichKeyboardLayoutToEnglish();
 
-			// 定时器
-			// 系统时间 cleanTimer
-			if (cleanTimer == null) {
+            // 定时器
+            // 系统时间 cleanTimer
+            if (cleanTimer == null) {
 				cleanTimer = new System.Windows.Threading.DispatcherTimer();
                 // TimeSpan.FromSeconds() 的CPU使用率达到25
                 // new TimeSpan(0, 0, 0)  的CPU使用率达到25
@@ -526,9 +527,9 @@ namespace BOT_Client {
         /// </summary>
         private String GetScreenRatio() {
             // 屏幕分辨率 宽
-            scrWidth = (int)DESKTOP.Width;
+            scrWidth = (int)ScreenHelper.DESKTOP.Width;
             // 屏幕分辨率 高
-            scrHeight = (int)DESKTOP.Height;	
+            scrHeight = (int)ScreenHelper.DESKTOP.Height;	
 
 			switch (scrWidth) {
 				case 1024:
@@ -551,42 +552,7 @@ namespace BOT_Client {
 			}
 		}
 
-        #region 获取屏幕的真实分辨率
-        // Win32 API
-        [DllImport("user32.dll")]
-        static extern IntPtr GetDC(IntPtr ptr);
-        [DllImport("gdi32.dll")]
-        static extern int GetDeviceCaps(
-        IntPtr hdc, // handle to DC
-        int nIndex // index of capability
-        );
-        [DllImport("user32.dll", EntryPoint = "ReleaseDC")]
-        static extern IntPtr ReleaseDC(IntPtr hWnd, IntPtr hDc);
-        // DeviceCaps常量
-        const int HORZRES = 8;
-        const int VERTRES = 10;
-        const int LOGPIXELSX = 88;
-        const int LOGPIXELSY = 90;
-        const int DESKTOPVERTRES = 117;
-        const int DESKTOPHORZRES = 118;
-
-        /// <summary>
-        /// 获取屏幕的真实分辨率
-        /// </summary>
-        public static Size DESKTOP {
-            get {
-                IntPtr hdc = GetDC(IntPtr.Zero);
-                Size size = new Size();
-                size.Width = GetDeviceCaps(hdc, DESKTOPHORZRES);
-                size.Height = GetDeviceCaps(hdc, DESKTOPVERTRES);
-                ReleaseDC(IntPtr.Zero, hdc);
-                return size;
-            }
-        }
-        #endregion
-
-
-
+ 
         #region 键盘/鼠标动作
 
         /// <summary>
@@ -637,7 +603,7 @@ namespace BOT_Client {
         /// <param name="width">屏幕宽</param>
         /// <param name="height">高</param>
         /// <param name="silent">是否静音信号源系统</param>
-        /// <param name="sysShow">显示FM或DL系统</param>
+        /// <param name="sysShow">选择显示系统</param>
         private void MouseActions(double width, double height, string silent, string sysShow) {
             GetScreenRatio();
             // 分辨率double转为int
@@ -652,28 +618,28 @@ namespace BOT_Client {
                         case 1024:
                             this.InputHelper.ClickThreeKeys(
                                 // 下方的信号源系统按钮
-                                CoordinateSettings.ALM_XHY_1024,
+                                CoordinateSettings.ALM_XHY_1024, 500,
                                 // 禁止声音
-                                CoordinateSettings.ALM_XHY_MUTE_1024,
+                                CoordinateSettings.ALM_XHY_MUTE_1024, 500,
                                 // 确定
                                 CoordinateSettings.ALM_XHY_YES_1024);
                             break;
                         case 1152:
                             this.InputHelper.ClickThreeKeys(
-                                CoordinateSettings.ALM_XHY_1152,
-                                CoordinateSettings.ALM_XHY_MUTE_1152,
+                                CoordinateSettings.ALM_XHY_1152, 500,
+                                CoordinateSettings.ALM_XHY_MUTE_1152, 500,
                                 CoordinateSettings.ALM_XHY_YES_1152);
                             break;
                         case 1280:
                             this.InputHelper.ClickThreeKeys(
-                                CoordinateSettings.ALM_XHY_1280_43,
-                                CoordinateSettings.ALM_XHY_MUTE_1280_43,
+                                CoordinateSettings.ALM_XHY_1280_43, 500,
+                                CoordinateSettings.ALM_XHY_MUTE_1280_43, 500,
                                 CoordinateSettings.ALM_XHY_YES_1280_43);
                             break;
                         default:
                             this.InputHelper.ClickThreeKeys(
-                                CoordinateSettings.ALM_XHY_1024,
-                                CoordinateSettings.ALM_XHY_MUTE_1024,
+                                CoordinateSettings.ALM_XHY_1024, 500,
+                                CoordinateSettings.ALM_XHY_MUTE_1024, 500,
                                 CoordinateSettings.ALM_XHY_YES_1024);
                             break;
                     }   // switch end
@@ -688,28 +654,28 @@ namespace BOT_Client {
                         case 1280:  
                             this.InputHelper.ClickThreeKeys(
                                 // 下方的信号源系统按钮
-                                CoordinateSettings.ALM_XHY_1280_169,
+                                CoordinateSettings.ALM_XHY_1280_169, 500,
                                 // 禁止声音
-                                CoordinateSettings.ALM_XHY_MUTE_1280_169,
+                                CoordinateSettings.ALM_XHY_MUTE_1280_169, 500,
                                 // 确定
                                 CoordinateSettings.ALM_XHY_YES_1280_169);
                             break;
                         case 1600:
                             this.InputHelper.ClickThreeKeys(
-                                CoordinateSettings.ALM_XHY_1600,
-                                CoordinateSettings.ALM_XHY_MUTE_1600,
+                                CoordinateSettings.ALM_XHY_1600, 500,
+                                CoordinateSettings.ALM_XHY_MUTE_1600, 500,
                                 CoordinateSettings.ALM_XHY_YES_1600);
                             break;
                         case 1920:
                             this.InputHelper.ClickThreeKeys(
-                                CoordinateSettings.ALM_XHY_1920,
-                                CoordinateSettings.ALM_XHY_MUTE_1920,
+                                CoordinateSettings.ALM_XHY_1920, 500,
+                                CoordinateSettings.ALM_XHY_MUTE_1920, 500,
                                 CoordinateSettings.ALM_XHY_YES_1920);
                             break;
                         default:
                             this.InputHelper.ClickThreeKeys(
-                                CoordinateSettings.ALM_XHY_1600,
-                                CoordinateSettings.ALM_XHY_MUTE_1600,
+                                CoordinateSettings.ALM_XHY_1600, 500,
+                                CoordinateSettings.ALM_XHY_MUTE_1600, 500,
                                 CoordinateSettings.ALM_XHY_YES_1600);
                             break;
                     }   // switch end
@@ -726,6 +692,8 @@ namespace BOT_Client {
                     break;
                 case STR_AM:
                     this.InputHelper.ClickOnceAt(CoordinateSettings.btnAM);
+                    break;
+                default:
                     break;
             }
 
@@ -748,7 +716,6 @@ namespace BOT_Client {
 
 
 		#region 延时函数：毫秒
-
         /// <summary>
         /// 延时子函数
         /// </summary>
@@ -760,7 +727,6 @@ namespace BOT_Client {
 			}, frame);
 			Dispatcher.PushFrame(frame);
 		}
-
 		/// <summary>
         /// 延时函数
 		/// </summary>
@@ -771,7 +737,6 @@ namespace BOT_Client {
 				DoEvents();
 			}
 		}
-
 		#endregion 
 
 
@@ -817,7 +782,6 @@ namespace BOT_Client {
 
 
 		#region 读取/写入 文件中的配置
-
 		/// <summary>
 		/// 读取配置文件
 		/// </summary>
