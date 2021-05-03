@@ -477,7 +477,7 @@ namespace BOT_Client {
 			this.InputHelper.BlockKeyMouse(false);
 
             // 必要延时，等待播报的“******远程网络监控系统”音频结束
-			Delay(5000);
+			Delay(8000);
             // 解除系统静音
 			SethMute();				
 		}
@@ -654,11 +654,11 @@ namespace BOT_Client {
                         case 1280:  
                             this.InputHelper.ClickThreeKeys(
                                 // 下方的信号源系统按钮
-                                CoordinateSettings.ALM_XHY_1280_169, 1000,
+                                CoordinateSettings.ALM_XHY_1280_720, 1000,
                                 // 禁止声音
-                                CoordinateSettings.ALM_XHY_MUTE_1280_169, 1000,
+                                CoordinateSettings.ALM_XHY_MUTE_1280_720, 1000,
                                 // 确定
-                                CoordinateSettings.ALM_XHY_YES_1280_169);
+                                CoordinateSettings.ALM_XHY_YES_1280_720);
                             break;
                         case 1600:
                             this.InputHelper.ClickThreeKeys(
