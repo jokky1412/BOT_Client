@@ -37,40 +37,48 @@ namespace BOT_Client {
         public static int[] btnENV = { 60, 420 };
         #endregion
 
+
+
         #region 分辨率4:3：下方信号源系统按钮和禁止报警
         /// <summary>
-        /// 下方按钮 信号源系统 4:3      1024/760
+        /// 下方按钮 信号源系统 4:3      1024/768
         /// </summary>
         public static int[] ALM_XHY_1024 = { 220, 710 };
         /// <summary>
-        /// 下方按钮 信号源系统 禁止报警 4:3     1024/760
+        /// 下方按钮 信号源系统 禁止报警 4:3     1024/768
         /// </summary>
         public static int[] ALM_XHY_MUTE_1024 = { 220, 640 };
         /// <summary>
-        /// 下方按钮 信号源系统 允许报警 4:3     1024/760
+        /// 下方按钮 信号源系统 允许报警 4:3     1024/768
         /// </summary>
         public static int[] ALM_XHY_UNMUTE_1024 = { 280, 640 };
         /// <summary>
-        /// 下方按钮 信号源系统 确定 4:3       1024/760
+        /// 下方按钮 信号源系统 确定 4:3       1024/768
         /// </summary>
         public static int[] ALM_XHY_YES_1024 = { 340, 670 };
 
+
+        // 1152/864
+        static int ALM_BTN_1152_Y = 805;
+        static int ALM_MUTE_UNMUTE_1152_Y = 740;
+        static int ALM_YES_1152_Y = 770;
         /// <summary>
         /// 下方按钮 信号源系统 4:3      1152/864
         /// </summary>
-        public static int[] ALM_XHY_1152 = { 220, 790 };
+        public static int[] ALM_XHY_1152 = { 220, ALM_BTN_1152_Y };
         /// <summary>
         /// 下方按钮 信号源系统 禁止报警 4:3     1152/864
         /// </summary>
-        public static int[] ALM_XHY_MUTE_1152 = { 220, 725 };
+        public static int[] ALM_XHY_MUTE_1152 = { 220, ALM_MUTE_UNMUTE_1152_Y };
         /// <summary>
         /// 下方按钮 信号源系统 允许报警 4:3     1152/864
         /// </summary>
-        public static int[] ALM_XHY_UNMUTE_1152 = { 280, 725 };
+        public static int[] ALM_XHY_UNMUTE_1152 = { 280, ALM_MUTE_UNMUTE_1152_Y };
         /// <summary>
         /// 下方按钮 信号源系统 确定 4:3       1152/864
         /// </summary>
-        public static int[] ALM_XHY_YES_1152 = { 340, 760 };
+        public static int[] ALM_XHY_YES_1152 = { 340, ALM_YES_1152_Y };
+
 
         /// <summary>
         /// 下方按钮 信号源系统 4:3      1280/960
@@ -94,19 +102,19 @@ namespace BOT_Client {
         /// <summary>
         /// 下方按钮 信号源系统 16:9     1280/720
         /// </summary>
-        public static int[] ALM_XHY_1280_169 = { 220, 660 };
+        public static int[] ALM_XHY_1280_720 = { 220, 660 };
         /// <summary>
         /// 下方按钮 信号源系统 禁止报警 16:9        1280/720
         /// </summary>
-        public static int[] ALM_XHY_MUTE_1280_169 = { 220, 590 };
+        public static int[] ALM_XHY_MUTE_1280_720 = { 220, 590 };
         /// <summary>
         /// 下方按钮 信号源系统 允许报警 16:9        1280/720
         /// </summary>
-        public static int[] ALM_XHY_UNMUTE_1280_169 = { 280, 580 };
+        public static int[] ALM_XHY_UNMUTE_1280_720 = { 280, 580 };
         /// <summary>
         /// 下方按钮 信号源系统 确定 16:9      1280/720
         /// </summary>
-        public static int[] ALM_XHY_YES_1280_169 = { 340, 620 };
+        public static int[] ALM_XHY_YES_1280_720 = { 340, 620 };
 
         /// <summary>
         /// 下方按钮 信号源系统 16:9     1600/900
