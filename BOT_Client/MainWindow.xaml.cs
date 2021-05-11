@@ -7,6 +7,7 @@ using System.Windows.Threading;
 using System.Threading;
 using System.Configuration;
 using KeyboardMouseAPI;
+using System.Windows.Input;
 
 namespace BOT_Client {
 	/// <summary>
@@ -221,8 +222,10 @@ namespace BOT_Client {
             this.BtnStart.Foreground = Brushes.Green;
             // 用户名/密码 文本框
             this.TxtUserName.IsReadOnly = false;
-            // 切换为英文输入法
-            InputHelper.SwtichKeyboardLayoutToEnglish();
+            // 禁止文本框使用其他输入法
+            System.Windows.Input.InputMethod.SetIsInputMethodEnabled(TxtUserName, false);
+            InputMethod.SetPreferredImeState(TxtUserName,InputMethodState.Off);
+
 
             // 定时器
             // 系统时间 cleanTimer
@@ -477,7 +480,7 @@ namespace BOT_Client {
 			this.InputHelper.BlockKeyMouse(false);
 
             // 必要延时，等待播报的“******远程网络监控系统”音频结束
-			Delay(8000);
+			Delay(10000);
             // 解除系统静音
 			SethMute();				
 		}
@@ -577,20 +580,14 @@ namespace BOT_Client {
             // 从文本框读取用户名和密码     // 2020.10
             userName = this.TxtUserName.Text;
 
-            // 输入用户名：输入用户名字符串的键码集合
-            for (int i = 0; i < userName.Length; i++)
-            {
-                this.InputHelper.InputOneKey((byte)this.InputHelper.GetKeyValues(userName)[i]);
-            }
-
+            // 复制文本框内容到剪切板   //  2021.05
+            Clipboard.SetDataObject(userName);
+            // 输入用户名：粘贴到用户名的输入框
+            InputHelper.CopyToClipboard();
             // 单击Tab，切换到密码栏
             this.InputHelper.InputOneKey(KeyboardMouseAPI.InputHelper.vbKeyTab);
-
-            // 输入密码：输入密码字符串的键码集合
-            for (int i = 0; i < userName.Length; i++)
-            {
-                this.InputHelper.InputOneKey((byte)this.InputHelper.GetKeyValues(userName)[i]);
-            }
+            // 输入密码：粘贴到密码的输入框
+            InputHelper.CopyToClipboard();
 
             // 单击回车键，确认登陆
             this.InputHelper.InputOneKey(KeyboardMouseAPI.InputHelper.vbKeyReturn);	
