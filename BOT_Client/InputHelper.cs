@@ -7,6 +7,8 @@ using System.Text.RegularExpressions;
 using System.Collections;
 using System.Windows.Threading;
 using System.Threading;
+using System.Windows;
+using System.Windows.Input;
 
 /// <summary>
 /// 模拟鼠标/键盘 
@@ -70,6 +72,15 @@ namespace KeyboardMouseAPI
 
             byte[] minimizeAllWindows = { vbKeyRWin, vbKeyM };
             InputKeys(minimizeAllWindows);
+        }
+
+        /// <summary>
+        /// 粘贴剪切板内容，到当前输入区域：Ctrl + V
+        /// </summary>
+        public void CopyToClipboard() {
+            // 快捷键：Ctrl + V
+            byte[] copyToClipboard = { vbKeyControl, vbKeyV };
+            InputKeys(copyToClipboard);
         }
 
 
@@ -617,12 +628,16 @@ namespace KeyboardMouseAPI
         }
         /// <summary>
         /// 切换为英文输入法
+        /// win10：无效 2021.05
         /// </summary>
-        public void SwtichKeyboardLayoutToEnglish() {
+        public void SwtichKeyboardLayoutToEnglish(Window window) {
             byte[] switchKeyboardLayou = { vbKeyAlt, vbKeyShift };
             if (GetCurrentKeyboardLayout() != 1033) {
                 InputKeys(switchKeyboardLayou);
             }
+
+            System.Windows.Input.InputMethod.SetPreferredImeState(window, InputMethodState.Off);
+
         }
 
         #endregion
