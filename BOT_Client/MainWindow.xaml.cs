@@ -60,7 +60,7 @@ namespace BOT_Client {
         /// <summary>
         /// 读取到的用户名 / 密码
         /// </summary>
-        private string userName = null;
+        private string userName = "";
 
         #endregion
 
@@ -79,7 +79,10 @@ namespace BOT_Client {
         /// "台站客户端"
         /// </summary>
         const string STATION_EXE_NAME_SHORT = "台站客户端";
-
+        /// <summary>
+        /// 台站客户端挂机程序
+        /// </summary>
+        const string STATION_EXE_BOT_NAME = "台站客户端挂机程序";
         /// <summary>
         /// "MemEmpty"
         /// </summary>
@@ -136,10 +139,6 @@ namespace BOT_Client {
         /// </summary>
         const string STR_SYS_SHOW = "sysShow";
         /// <summary>
-        /// "stationVer"
-        /// </summary>
-        const string STR_STATION_VER = "stationVer";
-        /// <summary>
         /// "version"
         /// </summary>
         const string STR_VERSION = "version";
@@ -167,12 +166,16 @@ namespace BOT_Client {
         /// "rebootSec"
         /// </summary>
         const string STR_REBOOT_SEC = "rebootSec";
-
+        /// <summary>
+        /// default_username
+        /// </summary>
+        const string STR_DEFAULT_USERNAME = "ab123t";
         #endregion
 
 
         // 对 app.config 读写配置
         Configuration cfg = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+        ConfigHelper cfgHelper = new ConfigHelper();
 
         // 辅助工具类
         /// <summary>
@@ -786,56 +789,46 @@ namespace BOT_Client {
             try
             {
                 // 客户端完整路径+文件名
-                this.TxtFilePath.Text = ConfigurationManager.AppSettings[STR_FULL_FILE_PATH];
+                //this.TxtFilePath.Text = ConfigurationManager.AppSettings[STR_FULL_FILE_PATH];
+                this.TxtFilePath.Text = cfgHelper.GetAppConfig(STR_FULL_FILE_PATH);
+
                 // 是否自动重启
-                autoReatart = ConfigurationManager.AppSettings[STR_AUTO_RESTART];
+                autoReatart = cfgHelper.GetAppConfig(STR_AUTO_RESTART);
                 // 是否静音信号源系统
-                silent = ConfigurationManager.AppSettings[STR_SILENT];
+                silent = cfgHelper.GetAppConfig(STR_SILENT);
                 // 选择显示哪个系统
-                sysShow = ConfigurationManager.AppSettings[STR_SYS_SHOW];
+                sysShow = cfgHelper.GetAppConfig(STR_SYS_SHOW);
 
                 // 用户名 / 密码
-                userName = ConfigurationManager.AppSettings[STR_USERNAME];
+                userName = cfgHelper.GetAppConfig(STR_USERNAME);
                 // 将 读取配置得到的用户名， 填入挂机软件界面的 用户名/密码文本框     // 2020.10
                 this.TxtUserName.Text = userName;
 
                 // 自动重启时间：时分秒
-                rebootHour = Int16.Parse(ConfigurationManager.AppSettings[STR_REBOOT_HOUR]);
-                rebootMin = Int16.Parse(ConfigurationManager.AppSettings[STR_REBOOT_MIN]);
-                //rebootSec = Int16.Parse(ConfigurationManager.AppSettings[STR_REBOOT_SEC]);
+                rebootHour = Int16.Parse(cfgHelper.GetAppConfig(STR_REBOOT_HOUR));
+                rebootMin = Int16.Parse(cfgHelper.GetAppConfig(STR_REBOOT_MIN));
+
                 // 文字：x : x 重启客户端
                 this.chkAutoRestart.Content = rebootHour + " : " + rebootMin + " 重启客户端";
 
                 // 文字：窗口标题栏
-                this.Title = "台站客户端挂机程序 V" + ConfigurationManager.AppSettings[STR_VERSION];
-                // 文字：在窗口中显示版本号
-                this.lblVer.Content = "[版本：" + ConfigurationManager.AppSettings[STR_STATION_VER] + " ]";
+                this.Title = STATION_EXE_BOT_NAME + " V" + cfgHelper.GetAppConfig(STR_VERSION);
             }
-            catch (ConfigurationErrorsException)
+            catch (ConfigurationErrorsException err)
             {
-                // 读取出错，则导入默认配置
-                MessageBox.Show("读取配置文件错误");
+                // 若读取出错，则采用默认配置
+                MessageBox.Show("读取配置文件错误: " + err.ToString());
                 autoReatart = STR_TRUE;
                 silent = STR_TRUE;
                 sysShow = STR_FM;
-                userName = null;
+                userName = STR_DEFAULT_USERNAME;
                 rebootHour = 2;
                 rebootMin = 30;
                 rebootSec = 0;
-                this.Title = "台站客户端挂机程序 V1.14";
+                this.Title = STATION_EXE_BOT_NAME + " V1.1";
                 this.lblVer.Content = null;
                 this.chkAutoRestart.Content = "每天02：30自动重启客户端";
             }
-
-            // 调试用：弹出窗口显示用户名的键码
-            //for (int i = 0; i < this.userName.Length; i++)
-            //{
-            //    MessageBox.Show(
-            //        this.userName.ToString()[i]
-            //        + ": "
-            //        + this.InputHelper.GetKeyValues(this.userName)[i].ToString());
-            //}
-
 
 			//***界面上的控件状态，根据配置初始化***//
 			// 是否自动重启
@@ -873,23 +866,27 @@ namespace BOT_Client {
         /// <param name="exeName">台站客户端文件名</param>
         /// <param name="auto">是否自动重启</param>
         /// <param name="silent">是否静音信号源系统</param>
-        /// <param name="show">选择显示的系统</param>
-        void WriteAppConfig(string path, string auto, string silent, string show, string userName) {
+        /// <param name="sysShow">选择显示的系统</param>
+        void WriteAppConfig(string path, string auto, string silent, string sysShow, string userName) {
             try
             {
                 cfg.AppSettings.Settings[STR_FULL_FILE_PATH].Value = path;
                 cfg.AppSettings.Settings[STR_AUTO_RESTART].Value = auto;
                 cfg.AppSettings.Settings[STR_SILENT].Value = silent;
-			    cfg.AppSettings.Settings[STR_SYS_SHOW].Value = show;
+			    cfg.AppSettings.Settings[STR_SYS_SHOW].Value = sysShow;
                 cfg.AppSettings.Settings[STR_USERNAME].Value = userName;
-            } catch(ConfigurationErrorsException) {
-                // 写入出错，则写入默认配置
+
+                cfgHelper.
+
+            } catch(ConfigurationErrorsException cfee) {
+                Console.WriteLine(cfee.ToString());
+                // 若写入出错，则写入默认配置
                 cfg.AppSettings.Settings[STR_FULL_FILE_PATH].Value = DEFAULT_FILE_FOLDER_C;
                 cfg.AppSettings.Settings[STR_AUTO_RESTART].Value = STR_TRUE;
                 cfg.AppSettings.Settings[STR_SILENT].Value = STR_TRUE;
                 cfg.AppSettings.Settings[STR_SYS_SHOW].Value = STR_FM;
-                cfg.AppSettings.Settings[STR_USERNAME].Value = "bs247t";
-            }
+                cfg.AppSettings.Settings[STR_USERNAME].Value = STR_DEFAULT_USERNAME;
+            } 
         }
 
 		#endregion
