@@ -13,7 +13,13 @@
         <CheckBox Content="关闭信号源系统声音" Height="25" HorizontalAlignment="Left" Margin="12,220,0,0" Name="chkSilent" VerticalAlignment="Top" Width="170" FontSize="14" Checked="chkSilent_Checked" Unchecked="chkSilent_Unchecked" />
 
         <Label Content="用户名/密码：" Height="31" HorizontalAlignment="Left" Margin="16,254,0,0" Name="lbllUserName" VerticalAlignment="Top" Width="97" Visibility="Visible" FontSize="14" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
-        <TextBox Height="29" HorizontalAlignment="Left" Margin="118,254,0,0" Name="TxtUserName" VerticalAlignment="Top" Width="80" Text="" IsEnabled="True" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True" TextChanged="TxtFilePath_TextChanged" />
+        <TextBox Height="29" Width="80"  Margin="118,254,0,0" 
+                 HorizontalAlignment="Left" VerticalAlignment="Top" 
+                 HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                 Name="TxtUserName" Text="" 
+                 IsEnabled="True"  IsReadOnly="True" TextChanged="TxtFilePath_TextChanged" 
+                 ToolTip="挂机时无法修改"
+                 />
 
 
         <RadioButton Content="显示调频系统" Height="25" HorizontalAlignment="Left" Margin="244,177,0,0" x:Name="rdbFM" VerticalAlignment="Top" FontSize="14" Checked="rdbFM_Checked" />

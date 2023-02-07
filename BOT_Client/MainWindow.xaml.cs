@@ -15,8 +15,7 @@ namespace BOT_Client {
 	/// </summary>
 	public partial class MainWindow : Window {
 
-        #region app.settings：配置字段和相关变量
-
+        #region 获取系统分辨率参数
         /// <summary>
         /// 系统屏幕分辨率，宽
         /// </summary>
@@ -26,9 +25,12 @@ namespace BOT_Client {
         /// </summary>
         private int scrHeight = (int)SystemParameters.PrimaryScreenHeight;
         /// <summary>
-        /// 分辨率比例 16或4
+        /// 分辨率的比例
         /// </summary>
         private string scrRatio = null;
+        #endregion
+
+        #region app.settings：配置字段和相关变量
         /// <summary>
         /// 是否关闭信号源系统声音： true / false
         /// </summary>
@@ -63,7 +65,6 @@ namespace BOT_Client {
         private string userName = "";
 
         #endregion
-
 
         #region 定义字符串常量
 
@@ -173,9 +174,6 @@ namespace BOT_Client {
         #endregion
 
 
-        // 对 app.config 读写配置
-        Configuration cfg = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-        ConfigHelper cfgHelper = new ConfigHelper();
 
         // 辅助工具类
         /// <summary>
@@ -186,12 +184,18 @@ namespace BOT_Client {
         /// 模拟鼠标和键盘的单个动作；将字符串转换为对应的键盘键码
         /// </summary>
         InputHelper InputHelper = new InputHelper();
-        //
+        /// <summary>
+        /// 屏幕分辨率等
+        /// </summary>
         ScreenHelper ScreenHelper = new ScreenHelper();
         /// <summary>
         /// 集合：客户端窗口内部各个控件的坐标
         /// </summary>
         CoordinateSettings CoordinateSettings = new CoordinateSettings();
+        /// <summary>
+        /// 对 app.config 读写配置
+        /// </summary>
+        ConfigHelper cfgHelper = new ConfigHelper();
 
         /// <summary>
         /// 定义两个定时器：系统时间定时器 和 用于挂机操作的定时器
@@ -212,7 +216,9 @@ namespace BOT_Client {
         /// 主程序窗口
         /// </summary>
 		public MainWindow() {
+
 			InitializeComponent();
+
 			//********* 初始化 //*********//
 			// 挂机标志位清零
 			this.hangFlag = 0;
@@ -254,7 +260,11 @@ namespace BOT_Client {
 		}
 
 
-        //  定时重启时间设置
+         /// <summary>
+         /// 定时重启时间设置
+         /// </summary>
+         /// <param name="sender"></param>
+         /// <param name="e"></param>
         void dTimer_Tick(object sender, EventArgs e) {
             // 每分钟检测客户端是否运行，若没有则运行
 			this.CNT60 += 1;
@@ -297,8 +307,8 @@ namespace BOT_Client {
 			//this.lbllNow.Content = this.hangFlag.ToString();
 			// 清理内存
 			this.clean += 1;
-            // 每3秒清理一次内存
-			if (this.clean == 3) {
+            // 每10秒清理一次内存
+			if (this.clean == 10) {
 				ClearMemory();
 				this.clean = 0;
 			}
@@ -307,7 +317,11 @@ namespace BOT_Client {
 
         #region  窗口内的按键功能
 
-        // 按键功能：选择文件：台站（值班）客户端.exe
+        /// <summary>
+        /// 按键功能：选择文件：台站（值班）客户端.exe
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BtnFileDialog_Click(object sender, RoutedEventArgs e) {
 			var openFileDialog = new Microsoft.Win32.OpenFileDialog() {
 				Filter = "Exe Files (*.exe)|*.exe"
@@ -320,49 +334,62 @@ namespace BOT_Client {
 			}
 		}
 
-        // 按键功能：开始挂机 / 停止挂机
+        /// <summary>
+        /// 按键功能：开始挂机 / 停止挂机
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
 		private void BtnStart_Click(object sender, RoutedEventArgs e) {
             // 从对话框读取文件完整路径+文件名
             fullFilePath = this.TxtFilePath.Text;
 
             // 检测文件名。不再检测sha1值。       // 2020.10
             // 读取到的完整路径+客户端文件名字符串，是否包含“台站客户端”或“台站值班客户端”，
-            // 并且该字符串以“客户端.exe”结尾
-            if(this.ProcessHelper.ContainsString(fullFilePath ,STATION_EXE_NAME_SHORT, STATION_EXE_NAME)
-                && fullFilePath.EndsWith("客户端.exe")
-                ) {
-                // 是否正在挂机
-                switch (this.hangFlag) {
-                    case 0: // 若不在挂机，则实现挂机功能
-                        if (fullFilePath != string.Empty) {
-                            // 如果有台站（值班）客户端正在运行，则结束进程
-                            this.ProcessHelper.KillProcess(STATION_EXE_NAME_SHORT);
-                            this.ProcessHelper.KillProcess(STATION_EXE_NAME);
+            // 并且文件名字符串以“客户端.exe”结尾
+            if(this.ProcessHelper.ContainsString
+                (fullFilePath, STATION_EXE_NAME_SHORT, STATION_EXE_NAME) 
+                && 
+                fullFilePath.EndsWith("客户端.exe")) {
+                    // 是否正在挂机
+                    switch (this.hangFlag) {
+                        case 0: // 若不在挂机，则实现挂机功能
+                            if (fullFilePath != string.Empty) {
+                                // 如果有台站（值班）客户端正在运行，则结束进程
+                                this.ProcessHelper.KillProcess(STATION_EXE_NAME_SHORT);
+                                this.ProcessHelper.KillProcess(STATION_EXE_NAME);
 
-                            this.ProcessHelper.KillProcess(MEMEMPTY_NAME);
-                            // 开始挂机动作
-                            this.HangActions();
-                        }
-                        break;
-                    case 1: // 若正在挂机，则停止挂机功能
-                        this.StopHangAction();
-                        break;
-                    default: // 默认，停止挂机功能
-                        this.StopHangAction();
-                        break;
-                }
+                                this.ProcessHelper.KillProcess(MEMEMPTY_NAME);
+                                // 开始挂机动作
+                                this.HangActions();
+                            }
+                            break;
+                        case 1: // 若正在挂机，则停止挂机功能
+                            this.StopHangAction();
+                            break;
+                        default: // 默认，停止挂机功能
+                            this.StopHangAction();
+                            break;
+                    }
             } else {
                 ;
             }
 
 		}
 
-        // 按键功能：关闭客户端
+        /// <summary>
+        /// 按键功能：关闭客户端
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
 		private void BtnStop_Click(object sender, RoutedEventArgs e) {
 			this.StopHangAction();
 		}
 
-        // 按键功能：启动 / 重启客户端
+        /// <summary>
+        /// 按键功能：启动 / 重启客户端
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BtnRestart_Click(object sender, RoutedEventArgs e) {
             fullFilePath = this.TxtFilePath.Text;
             // 不影响挂机状态，再进行启动/重启动作
@@ -372,33 +399,39 @@ namespace BOT_Client {
             // 改为检测文件名。不再检测sha1值。       // 2020.10
             // 检测字符串 读取到的完整路径+客户端文件名：
             // 是否包含“台站客户端”或“台站值班客户端”，并且该字符串以“客户端.exe”结尾
-            if (this.ProcessHelper.ContainsString(fullFilePath, STATION_EXE_NAME_SHORT, STATION_EXE_NAME)
-                && fullFilePath.EndsWith("客户端.exe")
-                ) {
-                // 判断是否有进程名为“台站客户端”或“台站值班客户端”的进程正在运行
-                bool processContains = this.ProcessHelper.ContainsProcess(STATION_EXE_NAME_SHORT, STATION_EXE_NAME);
-                if (!processContains) {
-                    // 没有检测到客户端进程，则启动客户端进程
-                    if (fullFilePath != string.Empty) {
-                        this.LogInActions(fullFilePath, silent, sysShow);
-                    }
-                    // 恢复挂机状态标志位
-                    this.hangFlag = tempHangFlag;
-                } else {
-                    // 如果检测到台站（值班）客户端进程，则先结束进程后，再次启动进程，即重启客户端
-                    if (fullFilePath != string.Empty) {
-                        this.ProcessHelper.KillProcess(STATION_EXE_NAME_SHORT);
-                        this.ProcessHelper.KillProcess(STATION_EXE_NAME);
-                        this.ProcessHelper.KillProcess(MEMEMPTY_NAME);
-                        this.LogInActions(fullFilePath, silent, sysShow);
+            if (this.ProcessHelper.ContainsString(
+                fullFilePath, STATION_EXE_NAME_SHORT, STATION_EXE_NAME)
+                && 
+                fullFilePath.EndsWith("客户端.exe")) {
+                    // 判断是否有进程名为“台站客户端”或“台站值班客户端”的进程正在运行
+                    bool processContains = this.ProcessHelper.ContainsProcess(
+                        STATION_EXE_NAME_SHORT, STATION_EXE_NAME);
+                    if (!processContains) {
+                        // 没有检测到客户端进程，则启动客户端进程
+                        if (fullFilePath != string.Empty) {
+                            this.LogInActions(fullFilePath, silent, sysShow);
+                        }
                         // 恢复挂机状态标志位
                         this.hangFlag = tempHangFlag;
+                    } else {
+                        // 如果检测到客户端进程，则先结束进程，再启动进程，即重启客户端
+                        if (fullFilePath != string.Empty) {
+                            this.ProcessHelper.KillProcess(STATION_EXE_NAME_SHORT);
+                            this.ProcessHelper.KillProcess(STATION_EXE_NAME);
+                            this.ProcessHelper.KillProcess(MEMEMPTY_NAME);
+                            this.LogInActions(fullFilePath, silent, sysShow);
+                            // 恢复挂机状态标志位
+                            this.hangFlag = tempHangFlag;
+                        }
                     }
-                }
             }
         }
                    
-        // 按键功能：退出
+        /// <summary>
+        /// 按键功能：退出
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
 		private void BtnQuit_Click(object sender, RoutedEventArgs e) {
             // 写入配置
             this.WriteAppConfig(
@@ -406,14 +439,14 @@ namespace BOT_Client {
                 autoReatart, 
                 silent, 
                 sysShow,
-                this.TxtUserName.Text
-                );
+                this.TxtUserName.Text);
             // 保存配置
-            this.cfg.Save();		
+            //this.cfg.Save();		
             // 垃圾回收
 			GC.Collect();
 			//GC.WaitForPendingFinalizers();
 			//GC.SuppressFinalize(this);
+            // 退出程序
 			System.Environment.Exit(0);
 		}
 
@@ -427,6 +460,7 @@ namespace BOT_Client {
             this.DenyOperation();
             // 登陆动作
             this.LogInActions(fullFilePath, silent, sysShow);
+
             // 挂机标志位置为1，表示正在挂机
             this.hangFlag = 1;
             // 第3个按键内容：显示为“停止挂机”
@@ -436,6 +470,7 @@ namespace BOT_Client {
 
             // 挂机Timer启动
             this.dTimer.Start();
+
             // 显示窗口底部的“正在挂机...”字样
             this.lblStats.Visibility = Visibility.Visible;
         }
@@ -449,9 +484,6 @@ namespace BOT_Client {
         /// <param name="silent">是否静音信号源系统</param>
         /// <param name="sysShow">显示FM或DL系统</param>
         private void LogInActions(string fullFileName, string silent, string sysShow) {
-            // 系统静音
-            SethMute();
-
             // 获得屏幕分辨率
             scrRatio = this.GetScreenRatio();
 
@@ -472,20 +504,49 @@ namespace BOT_Client {
             // 必要延时 > 1200	
 			Delay(2500);
 
-            // 键盘动作
-            KeyBoardActions();
-            // 必要延时 1300
-			Delay(1300);
-            // 鼠标动作
-			MouseActions(scrWidth, scrHeight, silent, sysShow);
+            // 判断客户端是否启动成功，若成功才进行键鼠动作
+            if (this.ProcessHelper.ContainsProcess(
+                STATION_EXE_NAME_SHORT, STATION_EXE_NAME)) {
+                // 系统静音
+                SethMute();
+                // 键盘动作
+                KeyBoardActions();
+                // 必要延时 1300
+                Delay(1300);
+                // 鼠标动作
+                MouseActions(scrWidth, scrHeight, silent, sysShow);
 
-            // 解锁鼠标键盘
-			this.InputHelper.BlockKeyMouse(false);
+                // 解锁鼠标键盘
+                this.InputHelper.BlockKeyMouse(false);
 
-            // 必要延时，等待播报的“******远程网络监控系统”音频结束
-			Delay(10000);
-            // 解除系统静音
-			SethMute();				
+                // 必要延时，等待播报的“******远程网络监控系统”音频结束
+                Delay(10000);
+                // 解除系统静音
+                SethMute();
+            } else {
+                // 解锁鼠标键盘
+                this.InputHelper.BlockKeyMouse(false);
+
+                // 必要延时，等待播报的“******远程网络监控系统”音频结束
+                Delay(10000);
+                // 解除系统静音
+                //SethMute();
+            }
+
+   //         // 键盘动作
+   //         KeyBoardActions();
+   //         // 必要延时 1300
+			//Delay(1300);
+   //         // 鼠标动作
+			//MouseActions(scrWidth, scrHeight, silent, sysShow);
+
+   //         // 解锁鼠标键盘
+			//this.InputHelper.BlockKeyMouse(false);
+
+   //         // 必要延时，等待播报的“******远程网络监控系统”音频结束
+			//Delay(10000);
+   //         // 解除系统静音
+			//SethMute();				
 		}
 
 
@@ -781,15 +842,14 @@ namespace BOT_Client {
         #endregion 
 
 
-		#region 读取/写入 文件中的配置
+		#region 读/写 *.exe.config文件中的配置
 		/// <summary>
-		/// 读取配置文件
+		/// 读配置
 		/// </summary>
 		void ReadAppConfig() {
             try
             {
                 // 客户端完整路径+文件名
-                //this.TxtFilePath.Text = ConfigurationManager.AppSettings[STR_FULL_FILE_PATH];
                 this.TxtFilePath.Text = cfgHelper.GetAppConfig(STR_FULL_FILE_PATH);
 
                 // 是否自动重启
@@ -830,9 +890,9 @@ namespace BOT_Client {
                 this.chkAutoRestart.Content = "每天02：30自动重启客户端";
             }
 
-			//***界面上的控件状态，根据配置初始化***//
-			// 是否自动重启
-			if (autoReatart == STR_TRUE) 
+            #region 界面上的控件状态，根据配置初始化
+            // 是否自动重启
+            if (autoReatart == STR_TRUE) 
                 this.chkAutoRestart.IsChecked = true;
 			else 
                 this.chkAutoRestart.IsChecked = false;
@@ -856,36 +916,33 @@ namespace BOT_Client {
                     this.rdbFM.IsChecked = true;
                     break;
             }
-			//***界面上的控件状态根据配置初始化 END***//
-		}
+            #endregion
+
+        }
 
         /// <summary>
-        /// 写入配置文件
+        /// 写配置
         /// </summary>
         /// <param name="path">台站客户端路径</param>
         /// <param name="exeName">台站客户端文件名</param>
         /// <param name="auto">是否自动重启</param>
         /// <param name="silent">是否静音信号源系统</param>
         /// <param name="sysShow">选择显示的系统</param>
-        void WriteAppConfig(string path, string auto, string silent, string sysShow, string userName) {
+        void WriteAppConfig(
+            string path, string auto, string silent, string sysShow, string userName) {
             try
             {
-                cfg.AppSettings.Settings[STR_FULL_FILE_PATH].Value = path;
-                cfg.AppSettings.Settings[STR_AUTO_RESTART].Value = auto;
-                cfg.AppSettings.Settings[STR_SILENT].Value = silent;
-			    cfg.AppSettings.Settings[STR_SYS_SHOW].Value = sysShow;
-                cfg.AppSettings.Settings[STR_USERNAME].Value = userName;
-
-                cfgHelper.
-
+                cfgHelper.UpdateAppConfig(STR_FULL_FILE_PATH, path);
+                cfgHelper.UpdateAppConfig(STR_AUTO_RESTART, auto);
+                cfgHelper.UpdateAppConfig(STR_SILENT, silent);
+                cfgHelper.UpdateAppConfig(STR_SYS_SHOW, sysShow);
+                cfgHelper.UpdateAppConfig(STR_USERNAME, userName);
             } catch(ConfigurationErrorsException cfee) {
-                Console.WriteLine(cfee.ToString());
-                // 若写入出错，则写入默认配置
-                cfg.AppSettings.Settings[STR_FULL_FILE_PATH].Value = DEFAULT_FILE_FOLDER_C;
-                cfg.AppSettings.Settings[STR_AUTO_RESTART].Value = STR_TRUE;
-                cfg.AppSettings.Settings[STR_SILENT].Value = STR_TRUE;
-                cfg.AppSettings.Settings[STR_SYS_SHOW].Value = STR_FM;
-                cfg.AppSettings.Settings[STR_USERNAME].Value = STR_DEFAULT_USERNAME;
+                cfgHelper.UpdateAppConfig(STR_FULL_FILE_PATH, DEFAULT_FILE_FOLDER_C);
+                cfgHelper.UpdateAppConfig(STR_AUTO_RESTART, STR_TRUE);
+                cfgHelper.UpdateAppConfig(STR_SILENT, STR_TRUE);
+                cfgHelper.UpdateAppConfig(STR_SYS_SHOW, STR_FM);
+                cfgHelper.UpdateAppConfig(STR_USERNAME, STR_DEFAULT_USERNAME);
             } 
         }
 
