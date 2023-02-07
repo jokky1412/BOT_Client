@@ -92,3 +92,8 @@ $RECYCLE.BIN/
 _NCrunch*
 
 !.cs
+
+*.dat
+codemap.dat
+global_history.dat
+DTabsHistory.dat
