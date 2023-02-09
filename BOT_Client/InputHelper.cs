@@ -93,18 +93,24 @@ namespace KeyboardMouseAPI
             mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
         }
 
+
         /// <summary>
         /// 按顺序，单击3个坐标
         /// </summary>
-        /// <param name="a"></param>坐标 a
-        /// <param name="b"></param>坐标 b
-        /// <param name="c"></param>坐标 c
-        public void ClickThreeKeys(int[] a, int milliSec1, int[] b, int milliSec2, int[] c) {
-            ClickOnceAt(a);
+        /// <param name="coordA">坐标a</param>
+        /// <param name="milliSec1">延时1</param>
+        /// <param name="coordB">坐标b</param>
+        /// <param name="milliSec2">延时2</param>
+        /// <param name="coordC">坐标c</param>
+        public void ClickThreeCOOR(
+            int[] coordA, int milliSec1, 
+            int[] coordB, int milliSec2, 
+            int[] coordC) {
+            ClickOnceAt(coordA);
             Delay(milliSec1);
-            ClickOnceAt(b);
+            ClickOnceAt(coordB);
             Delay(milliSec2);
-            ClickOnceAt(c);
+            ClickOnceAt(coordC);
         }
 
         #region 延时函数：毫秒
@@ -158,11 +164,11 @@ namespace KeyboardMouseAPI
         }
 
         /// <summary>
-        /// 鼠标移动到坐标：x,y
+        /// 鼠标移动到坐标（x, y）
         /// </summary>
         /// <param name="x"></param> H
         /// <param name="y"></param> V
-        public void MouseAt(int x, int y)
+        public void MouseMoveTo(int x, int y)
         {
             SetCursorPos(x, y);
         }
