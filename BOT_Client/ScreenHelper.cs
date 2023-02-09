@@ -9,7 +9,7 @@ namespace BOT_Client {
     /// <summary>
     /// 获取屏幕分辨率、缩放比例等相关数据
     /// </summary>
-    class ScreenHelper {
+    public class ScreenHelper {
 
         #region Win32 API
         [DllImport("user32.dll")]

@@ -174,29 +174,6 @@ namespace BOT_Client {
         #endregion
 
 
-
-        // 辅助工具类
-        /// <summary>
-        /// 进程相关动作，启动外部程序、结束进程、判断进程数量
-        /// </summary>
-        ProcessHelper ProcessHelper = new ProcessHelper();
-        /// <summary>
-        /// 模拟鼠标和键盘的单个动作；将字符串转换为对应的键盘键码
-        /// </summary>
-        InputHelper InputHelper = new InputHelper();
-        /// <summary>
-        /// 屏幕分辨率等
-        /// </summary>
-        ScreenHelper ScreenHelper = new ScreenHelper();
-        /// <summary>
-        /// 集合：客户端窗口内部各个控件的坐标
-        /// </summary>
-        CoordinateSettings CoordinateSettings = new CoordinateSettings();
-        /// <summary>
-        /// 对 app.config 读写配置
-        /// </summary>
-        ConfigHelper cfgHelper = new ConfigHelper();
-
         /// <summary>
         /// 定义两个定时器：系统时间定时器 和 用于挂机操作的定时器
         /// </summary>
@@ -288,7 +265,7 @@ namespace BOT_Client {
 		void detectProcess() {
             // 检测正在运行的进程当中，是否有“台站客户端.exe”或“台站值班客户端.exe”
             // 若检测不到，则启动登陆客户端动作
-            if (!this.ProcessHelper.ContainsProcess(STATION_EXE_NAME_SHORT, STATION_EXE_NAME))
+            if (!ProcessHelper.ContainsProcess(STATION_EXE_NAME_SHORT, STATION_EXE_NAME))
                 this.LogInActions(fullFilePath, silent, sysShow);
 		}
 
@@ -346,7 +323,7 @@ namespace BOT_Client {
             // 检测文件名。不再检测sha1值。       // 2020.10
             // 读取到的完整路径+客户端文件名字符串，是否包含“台站客户端”或“台站值班客户端”，
             // 并且文件名字符串以“客户端.exe”结尾
-            if(this.ProcessHelper.ContainsString
+            if(ProcessHelper.ContainsString
                 (fullFilePath, STATION_EXE_NAME_SHORT, STATION_EXE_NAME) 
                 && 
                 fullFilePath.EndsWith("客户端.exe")) {
@@ -355,10 +332,10 @@ namespace BOT_Client {
                         case 0: // 若不在挂机，则实现挂机功能
                             if (fullFilePath != string.Empty) {
                                 // 如果有台站（值班）客户端正在运行，则结束进程
-                                this.ProcessHelper.KillProcess(STATION_EXE_NAME_SHORT);
-                                this.ProcessHelper.KillProcess(STATION_EXE_NAME);
+                                ProcessHelper.KillProcess(STATION_EXE_NAME_SHORT);
+                                ProcessHelper.KillProcess(STATION_EXE_NAME);
 
-                                this.ProcessHelper.KillProcess(MEMEMPTY_NAME);
+                                ProcessHelper.KillProcess(MEMEMPTY_NAME);
                                 // 开始挂机动作
                                 this.HangActions();
                             }
@@ -399,12 +376,12 @@ namespace BOT_Client {
             // 改为检测文件名。不再检测sha1值。       // 2020.10
             // 检测字符串 读取到的完整路径+客户端文件名：
             // 是否包含“台站客户端”或“台站值班客户端”，并且该字符串以“客户端.exe”结尾
-            if (this.ProcessHelper.ContainsString(
+            if (ProcessHelper.ContainsString(
                 fullFilePath, STATION_EXE_NAME_SHORT, STATION_EXE_NAME)
                 && 
                 fullFilePath.EndsWith("客户端.exe")) {
                     // 判断是否有进程名为“台站客户端”或“台站值班客户端”的进程正在运行
-                    bool processContains = this.ProcessHelper.ContainsProcess(
+                    bool processContains = ProcessHelper.ContainsProcess(
                         STATION_EXE_NAME_SHORT, STATION_EXE_NAME);
                     if (!processContains) {
                         // 没有检测到客户端进程，则启动客户端进程
@@ -416,9 +393,9 @@ namespace BOT_Client {
                     } else {
                         // 如果检测到客户端进程，则先结束进程，再启动进程，即重启客户端
                         if (fullFilePath != string.Empty) {
-                            this.ProcessHelper.KillProcess(STATION_EXE_NAME_SHORT);
-                            this.ProcessHelper.KillProcess(STATION_EXE_NAME);
-                            this.ProcessHelper.KillProcess(MEMEMPTY_NAME);
+                            ProcessHelper.KillProcess(STATION_EXE_NAME_SHORT);
+                            ProcessHelper.KillProcess(STATION_EXE_NAME);
+                            ProcessHelper.KillProcess(MEMEMPTY_NAME);
                             this.LogInActions(fullFilePath, silent, sysShow);
                             // 恢复挂机状态标志位
                             this.hangFlag = tempHangFlag;
@@ -488,24 +465,24 @@ namespace BOT_Client {
             scrRatio = this.GetScreenRatio();
 
             // 屏蔽鼠标键盘动作
-            this.InputHelper.BlockKeyMouse(true);
+            InputHelper.BlockKeyMouse(true);
 
             // 最小化本挂机软件窗口
 			this.WindowState = System.Windows.WindowState.Minimized;
             // 最小化所有软件和程序的窗口
-			this.InputHelper.MinimizeAllWindows();
+			InputHelper.MinimizeAllWindows();
 
             // 必要延时
             Delay(1000);
 
             // 启动客户端进程
-            this.ProcessHelper.StartProcess(fullFileName);
+            ProcessHelper.StartProcess(fullFileName);
 
             // 必要延时 > 1200	
 			Delay(2500);
 
             // 判断客户端是否启动成功，若成功才进行键鼠动作
-            if (this.ProcessHelper.ContainsProcess(
+            if (ProcessHelper.ContainsProcess(
                 STATION_EXE_NAME_SHORT, STATION_EXE_NAME)) {
                 // 系统静音
                 SethMute();
@@ -517,7 +494,7 @@ namespace BOT_Client {
                 MouseActions(scrWidth, scrHeight, silent, sysShow);
 
                 // 解锁鼠标键盘
-                this.InputHelper.BlockKeyMouse(false);
+                InputHelper.BlockKeyMouse(false);
 
                 // 必要延时，等待播报的“******远程网络监控系统”音频结束
                 Delay(10000);
@@ -525,7 +502,7 @@ namespace BOT_Client {
                 SethMute();
             } else {
                 // 解锁鼠标键盘
-                this.InputHelper.BlockKeyMouse(false);
+                InputHelper.BlockKeyMouse(false);
 
                 // 必要延时，等待播报的“******远程网络监控系统”音频结束
                 Delay(10000);
@@ -541,7 +518,7 @@ namespace BOT_Client {
 			//MouseActions(scrWidth, scrHeight, silent, sysShow);
 
    //         // 解锁鼠标键盘
-			//this.InputHelper.BlockKeyMouse(false);
+			//InputHelper.BlockKeyMouse(false);
 
    //         // 必要延时，等待播报的“******远程网络监控系统”音频结束
 			//Delay(10000);
@@ -574,9 +551,9 @@ namespace BOT_Client {
             // 挂机标志位置为0
 			this.hangFlag = 0;
             // 结束相关进程
-            this.ProcessHelper.KillProcess(STATION_EXE_NAME_SHORT);
-            this.ProcessHelper.KillProcess(STATION_EXE_NAME);
-            this.ProcessHelper.KillProcess(MEMEMPTY_NAME);
+            ProcessHelper.KillProcess(STATION_EXE_NAME_SHORT);
+            ProcessHelper.KillProcess(STATION_EXE_NAME);
+            ProcessHelper.KillProcess(MEMEMPTY_NAME);
             // 更改窗口控件属性
             this.BtnStart.Content = CONTENT_HANG_READY;
 			this.BtnStart.Foreground = Brushes.Green;
@@ -628,16 +605,16 @@ namespace BOT_Client {
         private void KeyBoardActions() 
         {
             // 最大化已启动的当前客户端软件窗口
-            this.InputHelper.MaxmizeThisWindow();
+            InputHelper.MaxmizeThisWindow();
 
             // 必要延时 1000
             Delay(1000);
             // 单击Tab，选中“进入”
-            this.InputHelper.InputOneKey(KeyboardMouseAPI.InputHelper.vbKeyTab);
+            InputHelper.InputOneKey(KeyboardMouseAPI.InputHelper.vbKeyTab);
             // 必要延时 1000
             Delay(1000);
             // 单击Enter：回车“进入”            
-			this.InputHelper.InputOneKey(KeyboardMouseAPI.InputHelper.vbKeyReturn);
+			InputHelper.InputOneKey(KeyboardMouseAPI.InputHelper.vbKeyReturn);
             // 必要延时 1000,等待输入用户名密码的窗口的弹出
             Delay(1500);
 
@@ -649,12 +626,12 @@ namespace BOT_Client {
             // 输入用户名：粘贴到用户名的输入框
             InputHelper.CopyToClipboard();
             // 单击Tab，切换到密码栏
-            this.InputHelper.InputOneKey(KeyboardMouseAPI.InputHelper.vbKeyTab);
+            InputHelper.InputOneKey(KeyboardMouseAPI.InputHelper.vbKeyTab);
             // 输入密码：粘贴到密码的输入框
             InputHelper.CopyToClipboard();
 
             // 单击回车键，确认登陆
-            this.InputHelper.InputOneKey(KeyboardMouseAPI.InputHelper.vbKeyReturn);	
+            InputHelper.InputOneKey(KeyboardMouseAPI.InputHelper.vbKeyReturn);	
 		}
 
 
@@ -665,7 +642,9 @@ namespace BOT_Client {
         /// <param name="height">高</param>
         /// <param name="silent">是否静音信号源系统</param>
         /// <param name="sysShow">选择显示系统</param>
-        private void MouseActions(double width, double height, string silent, string sysShow) {
+        private void MouseActions(
+            double width, double height, 
+            string silent, string sysShow) {
             GetScreenRatio();
             // 分辨率double转为int
             int scrWidth_int = (int)scrWidth;
@@ -677,7 +656,7 @@ namespace BOT_Client {
                 if (silent == STR_TRUE) {
                     switch (scrWidth_int) {
                         case 1024:
-                            this.InputHelper.ClickThreeKeys(
+                            InputHelper.ClickThreeCOOR(
                                 // 下方的信号源系统按钮
                                 CoordinateSettings.ALM_XHY_1024, 1000,
                                 // 禁止声音
@@ -686,19 +665,19 @@ namespace BOT_Client {
                                 CoordinateSettings.ALM_XHY_YES_1024);
                             break;
                         case 1152:
-                            this.InputHelper.ClickThreeKeys(
+                            InputHelper.ClickThreeCOOR(
                                 CoordinateSettings.ALM_XHY_1152, 1000,
                                 CoordinateSettings.ALM_XHY_MUTE_1152, 1000,
                                 CoordinateSettings.ALM_XHY_YES_1152);
                             break;
                         case 1280:
-                            this.InputHelper.ClickThreeKeys(
+                            InputHelper.ClickThreeCOOR(
                                 CoordinateSettings.ALM_XHY_1280_43, 1000,
                                 CoordinateSettings.ALM_XHY_MUTE_1280_43, 1000,
                                 CoordinateSettings.ALM_XHY_YES_1280_43);
                             break;
                         default:
-                            this.InputHelper.ClickThreeKeys(
+                            InputHelper.ClickThreeCOOR(
                                 CoordinateSettings.ALM_XHY_1024, 1000,
                                 CoordinateSettings.ALM_XHY_MUTE_1024, 1000,
                                 CoordinateSettings.ALM_XHY_YES_1024);
@@ -713,7 +692,7 @@ namespace BOT_Client {
                 if (silent == STR_TRUE) {
                     switch (scrWidth_int) {
                         case 1280:  
-                            this.InputHelper.ClickThreeKeys(
+                            InputHelper.ClickThreeCOOR(
                                 // 下方的信号源系统按钮
                                 CoordinateSettings.ALM_XHY_1280_720, 1000,
                                 // 禁止声音
@@ -722,19 +701,19 @@ namespace BOT_Client {
                                 CoordinateSettings.ALM_XHY_YES_1280_720);
                             break;
                         case 1600:
-                            this.InputHelper.ClickThreeKeys(
+                            InputHelper.ClickThreeCOOR(
                                 CoordinateSettings.ALM_XHY_1600, 1000,
                                 CoordinateSettings.ALM_XHY_MUTE_1600, 1000,
                                 CoordinateSettings.ALM_XHY_YES_1600);
                             break;
                         case 1920:
-                            this.InputHelper.ClickThreeKeys(
+                            InputHelper.ClickThreeCOOR(
                                 CoordinateSettings.ALM_XHY_1920, 1000,
                                 CoordinateSettings.ALM_XHY_MUTE_1920, 1000,
                                 CoordinateSettings.ALM_XHY_YES_1920);
                             break;
                         default:
-                            this.InputHelper.ClickThreeKeys(
+                            InputHelper.ClickThreeCOOR(
                                 CoordinateSettings.ALM_XHY_1600, 1000,
                                 CoordinateSettings.ALM_XHY_MUTE_1600, 1000,
                                 CoordinateSettings.ALM_XHY_YES_1600);
@@ -746,13 +725,13 @@ namespace BOT_Client {
             // 选择显示系统
             switch (sysShow) {
                 case STR_FM:
-                    this.InputHelper.ClickOnceAt(CoordinateSettings.btnFM);
+                    InputHelper.ClickOnceAt(CoordinateSettings.btnFM);
                     break;
                 case STR_TV:
-                    this.InputHelper.ClickOnceAt(CoordinateSettings.btnTV);
+                    InputHelper.ClickOnceAt(CoordinateSettings.btnTV);
                     break;
                 case STR_AM:
-                    this.InputHelper.ClickOnceAt(CoordinateSettings.btnAM);
+                    InputHelper.ClickOnceAt(CoordinateSettings.btnAM);
                     break;
                 default:
                     break;
@@ -850,29 +829,29 @@ namespace BOT_Client {
             try
             {
                 // 客户端完整路径+文件名
-                this.TxtFilePath.Text = cfgHelper.GetAppConfig(STR_FULL_FILE_PATH);
+                this.TxtFilePath.Text = ConfigHelper.GetAppConfig(STR_FULL_FILE_PATH);
 
                 // 是否自动重启
-                autoReatart = cfgHelper.GetAppConfig(STR_AUTO_RESTART);
+                autoReatart = ConfigHelper.GetAppConfig(STR_AUTO_RESTART);
                 // 是否静音信号源系统
-                silent = cfgHelper.GetAppConfig(STR_SILENT);
+                silent = ConfigHelper.GetAppConfig(STR_SILENT);
                 // 选择显示哪个系统
-                sysShow = cfgHelper.GetAppConfig(STR_SYS_SHOW);
+                sysShow = ConfigHelper.GetAppConfig(STR_SYS_SHOW);
 
                 // 用户名 / 密码
-                userName = cfgHelper.GetAppConfig(STR_USERNAME);
+                userName = ConfigHelper.GetAppConfig(STR_USERNAME);
                 // 将 读取配置得到的用户名， 填入挂机软件界面的 用户名/密码文本框     // 2020.10
                 this.TxtUserName.Text = userName;
 
                 // 自动重启时间：时分秒
-                rebootHour = Int16.Parse(cfgHelper.GetAppConfig(STR_REBOOT_HOUR));
-                rebootMin = Int16.Parse(cfgHelper.GetAppConfig(STR_REBOOT_MIN));
+                rebootHour = Int16.Parse(ConfigHelper.GetAppConfig(STR_REBOOT_HOUR));
+                rebootMin = Int16.Parse(ConfigHelper.GetAppConfig(STR_REBOOT_MIN));
 
                 // 文字：x : x 重启客户端
                 this.chkAutoRestart.Content = rebootHour + " : " + rebootMin + " 重启客户端";
 
                 // 文字：窗口标题栏
-                this.Title = STATION_EXE_BOT_NAME + " V" + cfgHelper.GetAppConfig(STR_VERSION);
+                this.Title = STATION_EXE_BOT_NAME + " V" + ConfigHelper.GetAppConfig(STR_VERSION);
             }
             catch (ConfigurationErrorsException err)
             {
@@ -932,17 +911,17 @@ namespace BOT_Client {
             string path, string auto, string silent, string sysShow, string userName) {
             try
             {
-                cfgHelper.UpdateAppConfig(STR_FULL_FILE_PATH, path);
-                cfgHelper.UpdateAppConfig(STR_AUTO_RESTART, auto);
-                cfgHelper.UpdateAppConfig(STR_SILENT, silent);
-                cfgHelper.UpdateAppConfig(STR_SYS_SHOW, sysShow);
-                cfgHelper.UpdateAppConfig(STR_USERNAME, userName);
+                ConfigHelper.UpdateAppConfig(STR_FULL_FILE_PATH, path);
+                ConfigHelper.UpdateAppConfig(STR_AUTO_RESTART, auto);
+                ConfigHelper.UpdateAppConfig(STR_SILENT, silent);
+                ConfigHelper.UpdateAppConfig(STR_SYS_SHOW, sysShow);
+                ConfigHelper.UpdateAppConfig(STR_USERNAME, userName);
             } catch(ConfigurationErrorsException cfee) {
-                cfgHelper.UpdateAppConfig(STR_FULL_FILE_PATH, DEFAULT_FILE_FOLDER_C);
-                cfgHelper.UpdateAppConfig(STR_AUTO_RESTART, STR_TRUE);
-                cfgHelper.UpdateAppConfig(STR_SILENT, STR_TRUE);
-                cfgHelper.UpdateAppConfig(STR_SYS_SHOW, STR_FM);
-                cfgHelper.UpdateAppConfig(STR_USERNAME, STR_DEFAULT_USERNAME);
+                ConfigHelper.UpdateAppConfig(STR_FULL_FILE_PATH, DEFAULT_FILE_FOLDER_C);
+                ConfigHelper.UpdateAppConfig(STR_AUTO_RESTART, STR_TRUE);
+                ConfigHelper.UpdateAppConfig(STR_SILENT, STR_TRUE);
+                ConfigHelper.UpdateAppConfig(STR_SYS_SHOW, STR_FM);
+                ConfigHelper.UpdateAppConfig(STR_USERNAME, STR_DEFAULT_USERNAME);
             } 
         }
 
