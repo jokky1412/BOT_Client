@@ -11,7 +11,7 @@ public sealed class ProcessHelper {
 	/// 用命令行启动外部程序
 	/// </summary>
 	/// <param name="fullName"></param>
-	public void StartProcess(string fullFileName) {
+	public static void StartProcess(string fullFileName) {
 		string name, tempName, workingDir;
 		Process cmd = new Process();
 		cmd.StartInfo.UseShellExecute = false;
@@ -37,7 +37,7 @@ public sealed class ProcessHelper {
 	/// 根据进程名结束进程
 	/// </summary>
 	/// <param name="processName"></param>
-	public void KillProcess(string processName) {
+	public static void KillProcess(string processName) {
 		try {
 			foreach (var process in Process.GetProcessesByName(processName)) {
 				process.Kill();
@@ -53,7 +53,7 @@ public sealed class ProcessHelper {
     /// </summary>
     /// <param name="exeName"></param>
     /// <returns></returns>
-    public int ProcessesCount(string exeName) {
+    public static int ProcessesCount(string exeName) {
 		int num = 0;
 		try {
 			foreach (var process in Process.GetProcessesByName(exeName)) {
@@ -74,7 +74,8 @@ public sealed class ProcessHelper {
     /// <param name="processStr1"></param>进程名1
     /// <param name="processStr2"></param>进程名2
     /// <returns></returns>
-    public bool ContainsProcess(String processStr1, String processStr2) {
+    public static bool ContainsProcess(
+        String processStr1, String processStr2) {
         if (ProcessesCount(processStr1) > 0 || ProcessesCount(processStr2) > 0)
             return true;
         else
@@ -90,7 +91,8 @@ public sealed class ProcessHelper {
     /// <param name="subString"></param>指定字符串1
     /// <param name="subString2"></param>指定字符串2
     /// <returns></returns>
-    public bool ContainsString(String str, String subString, String subString2) {
+    public static bool ContainsString(
+        String str, String subString, String subString2) {
         if (str.Contains(subString) || str.Contains(subString2))
             return true;
         else

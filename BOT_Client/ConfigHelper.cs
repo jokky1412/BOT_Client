@@ -15,7 +15,7 @@ namespace BOT_Client {
         ///</summary>
         ///<param name="connectionName"></param>
         ///<returns></returns>
-        public string GetConnectionStringsConfig(string connectionName) {
+        public static string GetConnectionStringsConfig(string connectionName) {
             string connectionString =
                     ConfigurationManager.ConnectionStrings[connectionName].ConnectionString.ToString();
             Console.WriteLine(connectionString);
@@ -28,7 +28,7 @@ namespace BOT_Client {
         ///<param name="newName">连接字符串名称</param>
         ///<param name="newConString">连接字符串内容</param>
         ///<param name="newProviderName">数据提供程序名称</param>
-        public void UpdateConnectionStringsConfig(string newName,
+        public static void UpdateConnectionStringsConfig(string newName,
             string newConString,
             string newProviderName) {
             bool isModified = false;    //记录该连接串是否已经存在
@@ -59,7 +59,7 @@ namespace BOT_Client {
         ///</summary>
         ///<param name="strKey"></param>
         ///<returns></returns>
-        public string GetAppConfig(string strKey) {
+        public static string GetAppConfig(string strKey) {
             foreach (string key in ConfigurationManager.AppSettings) {
                 if (key == strKey) {
                     return ConfigurationManager.AppSettings[strKey];
@@ -73,7 +73,7 @@ namespace BOT_Client {
         ///</summary>  
         ///<param name="newKey"></param>  
         ///<param name="newValue"></param>  
-        public void UpdateAppConfig(string newKey, string newValue) {
+        public static void UpdateAppConfig(string newKey, string newValue) {
             // Open App.Config of executable
             Configuration config = 
                 ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);

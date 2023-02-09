@@ -22,7 +22,7 @@ namespace KeyboardMouseAPI
         /// 模拟：输入1个按键
         /// </summary>
         /// <param name="keyValue">用按键值表示</param>
-        public void InputOneKey(byte keyValue)
+        public static void InputOneKey(byte keyValue)
         {
             keybd_event(keyValue, 0, 0, 0);        //按下
             keybd_event(keyValue, 0, 2, 0);        //释放
@@ -32,7 +32,7 @@ namespace KeyboardMouseAPI
         /// 模拟：同时按下多个按键
         /// </summary>
         /// <param name="keyValues"></param>
-        public void InputKeys(byte[] keyValues) {
+        public static void InputKeys(byte[] keyValues) {
             for(int i = 0; i < keyValues.Length; i++) {
                 keybd_event(keyValues[i], 0, 0, 0);        //按下 按键 i
             }
@@ -44,7 +44,7 @@ namespace KeyboardMouseAPI
         /// <summary>
         /// 最小化当前窗口：ALT + Esc
         /// </summary>
-        public void MinimizeThisWindow() {
+        public static void MinimizeThisWindow() {
             // 快捷键是：ALT + Esc
             byte[] minimizeWindow = { vbKeyAlt, vbKeyEscape };
             InputKeys(minimizeWindow);
@@ -53,7 +53,7 @@ namespace KeyboardMouseAPI
         /// <summary>
         /// 最大化当前窗口：ALT + 空格 + X
         /// </summary>
-        public void MaxmizeThisWindow() {
+        public static void MaxmizeThisWindow() {
             // 快捷键是：ALT + 空格 + X
             byte[] maxmizeWindow = { vbKeyAlt, vbKeySpace, vbKeyX };
             InputKeys(maxmizeWindow);
@@ -62,7 +62,7 @@ namespace KeyboardMouseAPI
         /// <summary>
         /// 最小化所有窗口：WIN + M
         /// </summary>
-        public void MinimizeAllWindows() {
+        public static void MinimizeAllWindows() {
             //// 按下
             //InputHelper.keybd_event(vbKeyLWin, 0, 0, 0);       // Lwin;
             //InputHelper.keybd_event(vbKeyM, 0, 0, 0);		// M
@@ -77,7 +77,7 @@ namespace KeyboardMouseAPI
         /// <summary>
         /// 粘贴剪切板内容，到当前输入区域：Ctrl + V
         /// </summary>
-        public void CopyToClipboard() {
+        public static void CopyToClipboard() {
             // 快捷键：Ctrl + V
             byte[] copyToClipboard = { vbKeyControl, vbKeyV };
             InputKeys(copyToClipboard);
@@ -88,7 +88,7 @@ namespace KeyboardMouseAPI
         /// 单击坐标 坐标数组{ x, y }
         /// </summary>
         /// <param name="coord"></param>坐标数组
-        public void ClickOnceAt(int[] coord) {
+        public static void ClickOnceAt(int[] coord) {
             SetCursorPos(coord[0], coord[1]);
             mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
         }
@@ -102,7 +102,7 @@ namespace KeyboardMouseAPI
         /// <param name="coordB">坐标b</param>
         /// <param name="milliSec2">延时2</param>
         /// <param name="coordC">坐标c</param>
-        public void ClickThreeCOOR(
+        public static void ClickThreeCOOR(
             int[] coordA, int milliSec1, 
             int[] coordB, int milliSec2, 
             int[] coordC) {
@@ -141,14 +141,14 @@ namespace KeyboardMouseAPI
         /// <summary>
         /// 鼠标单击当前位置
         /// </summary>
-        public void ClickOnce()
+        public static void ClickOnce()
         {
             mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
         }
         /// <summary>
         /// 鼠标双击当前位置
         /// </summary>
-        public void ClickTwice()
+        public static void ClickTwice()
         {
             mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
             mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
@@ -158,7 +158,7 @@ namespace KeyboardMouseAPI
         /// 屏蔽鼠标和键盘的输入：true/屏蔽；false/解锁
         /// </summary>
         /// <param name="b">true/屏蔽 // false/解锁</param> 
-        public void BlockKeyMouse(bool b)
+        public static void BlockKeyMouse(bool b)
         {
             BlockInput(b);
         }
@@ -168,7 +168,7 @@ namespace KeyboardMouseAPI
         /// </summary>
         /// <param name="x"></param> H
         /// <param name="y"></param> V
-        public void MouseMoveTo(int x, int y)
+        public static void MouseMoveTo(int x, int y)
         {
             SetCursorPos(x, y);
         }
