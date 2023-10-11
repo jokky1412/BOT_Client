@@ -8,6 +8,7 @@ using System.Threading;
 using System.Configuration;
 using KeyboardMouseAPI;
 using System.Windows.Input;
+using System.Text.RegularExpressions;
 
 namespace BOT_Client {
 	/// <summary>
@@ -791,8 +792,29 @@ namespace BOT_Client {
             fullFilePath = this.TxtFilePath.Text;
 		}
 
-		// 显示 fm / tv / am
-		private void rdbFM_Checked(object sender, RoutedEventArgs e) {
+        /// <summary>
+        /// 用户名/密码文本框，过滤掉非英文非数字的字符
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TxtUserName_TextChanged(object sender, TextChangedEventArgs e) {
+            string str = this.TxtUserName.Text;
+            string strRet = "";
+
+            // 英文、数字 的正则表达式
+            Regex rex = new Regex("[a-z0-9A-Z_]+");
+
+            // 替换掉非法字符
+            MatchCollection results = rex.Matches(str);
+            foreach (var v in results) {
+                strRet += v.ToString();
+            }
+            this.TxtUserName.Text = strRet;
+        }
+
+
+        // 显示 fm / tv / am
+        private void rdbFM_Checked(object sender, RoutedEventArgs e) {
             sysShow = STR_FM;
 		}
         private void rdbTV_Checked(object sender, RoutedEventArgs e) {
@@ -932,10 +954,12 @@ namespace BOT_Client {
 
         [DllImport("kernel32.dll", EntryPoint = "SetProcessWorkingSetSize")]
 		public static extern int SetProcessWorkingSetSize(IntPtr process, int minSize, int maxSize);
-		/// <summary>
-		/// 释放内存
-		/// </summary>
-		public static void ClearMemory() {
+
+
+        /// <summary>
+        /// 释放内存
+        /// </summary>
+        public static void ClearMemory() {
 			GC.Collect();
 			GC.WaitForPendingFinalizers();
 			if (Environment.OSVersion.Platform == PlatformID.Win32NT) {

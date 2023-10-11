@@ -17,8 +17,8 @@
                  HorizontalAlignment="Left" VerticalAlignment="Top" 
                  HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                  Name="TxtUserName" Text="" 
-                 IsEnabled="True"  IsReadOnly="True" TextChanged="TxtFilePath_TextChanged" 
-                 ToolTip="挂机时无法修改"
+                 IsEnabled="True"  IsReadOnly="True" TextChanged="TxtUserName_TextChanged"
+                 ToolTip="挂机时无法修改" MaxLength="12"
                  />
 
 
